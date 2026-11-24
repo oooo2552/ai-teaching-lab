@@ -1,0 +1,46 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": "auth != null && auth.uid === 'GO8ks4VWq2YgjOMnee8ldR2Za8N2'",
+        ".write": "auth != null && auth.uid === 'GO8ks4VWq2YgjOMnee8ldR2Za8N2'",
+        "state": {
+          ".read": "auth != null"
+        },
+        "results": {
+          ".read": "auth != null"
+        },
+        "players": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.val() === true && root.child('rooms').child($room).child('state').child('status').val() === 'lobby'"
+          }
+        },
+        "eligible": {
+          "$round": {
+            "$uid": {
+              ".read": "auth != null && auth.uid === $uid"
+            }
+          }
+        },
+        "assignments": {
+          "$round": {
+            "$uid": {
+              ".read": "auth != null && auth.uid === $uid"
+            }
+          }
+        },
+        "votes": {
+          "$round": {
+            "$uid": {
+              ".read": "auth != null && auth.uid === $uid",
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && (newData.val() === 'A' || newData.val() === 'B') && root.child('rooms').child($room).child('state').child('status').val() === 'voting' && root.child('rooms').child($room).child('state').child('round').val() + '' === $round && root.child('rooms').child($room).child('eligible').child($round).child($uid).val() === true && root.child('rooms').child($room).child('state').child('mode').val() !== 'central' && (!root.child('rooms').child($room).child('assignments').child($round).child($uid).exists() || root.child('rooms').child($room).child('assignments').child($round).child($uid).val() === newData.val())"
+            }
+          }
+        }
+      }
+    }
+  }
+}
